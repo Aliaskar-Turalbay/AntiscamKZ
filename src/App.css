@@ -182,3 +182,35 @@
     border-right-color: var(--border);
   }
 }
+
+/* ========================================== */
+/*    НАШИ НОВЫЕ ПРАВИЛА ДЛЯ СКРОЛЛА СЕЛЕКТА   */
+/* ========================================== */
+
+/* Ограничение высоты селекта и стилизация под скроллинг */
+select {
+  max-height: 200px !important;
+}
+
+select option {
+  padding: 8px;
+  background-color: inherit;
+}
+
+/* Кастомизация полосы прокрутки для браузеров на движке WebKit (Chrome, Safari, Edge) */
+select::-webkit-scrollbar {
+  width: 6px;
+}
+
+select::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+select::-webkit-scrollbar-thumb {
+  background: #3b82f6; /* Наш синий цвет */
+  border-radius: 10px;
+}
+
+select::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
