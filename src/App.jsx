@@ -944,7 +944,7 @@ export default function App() {
               <FileText className="w-6 h-6" />
               <h2 className="text-xl font-black tracking-tight uppercase">Готовое заявление для eOtinish.kz</h2>
             </div>
-            <p className="text-xs text-slate-400 mb-4">Скопируйте текст ниже, перейдите на портал <strong>eOtinish.kz</strong>, выберите «Подать обращение» -> «Министерство внутренних дел РК» и вставьте в поле текста.</p>
+            <p className="text-xs text-slate-400 mb-4">Скопируйте текст ниже, перейдите на портал <strong>eOtinish.kz</strong>, выберите «Подать обращение» → «Министерство внутренних дел РК» и вставьте в поле текста.</p>
             <div className="relative">
               <pre className={`p-4 rounded-2xl border text-xs font-mono whitespace-pre-wrap h-64 overflow-y-auto leading-relaxed shadow-inner ${darkMode ? 'bg-slate-950 border-slate-800 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700'}`}>
                 {generatedStatement}
