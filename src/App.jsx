@@ -338,7 +338,7 @@ export default function App() {
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <span className={`font-black text-2xl tracking-tight ${darkMode ? 'bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent' : 'text-slate-900'}`}>
-                AntiScam<span className="text-blue-500">.kz</span>
+                AldarKose<span className="text-blue-500">.kz</span>
               </span>
             </div>
             
