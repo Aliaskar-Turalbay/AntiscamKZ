@@ -8,7 +8,8 @@
 <meta name="theme-color" content="#0F172A">
 <meta property="og:title" content="Алдар Көсе — определитель номера">
 <meta property="og:description" content="Кто звонит — видно до ответа. Бета-версия для Android.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23EAB308' d='M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -66,7 +67,7 @@
   /* ===== Шапка ===== */
   .hero { background: var(--navy); color: var(--hero-text); padding: 20px 0 56px; }
   .brand { display: flex; align-items: center; gap: 10px; font-family: Lexend, sans-serif; font-weight: 600; }
-  .brand-mark { width: 40px; height: 40px; border-radius: 12px; background: rgba(234,179,8,.14); display: grid; place-items: center; }
+  .brand-mark { width: 44px; height: 44px; border-radius: 50%; display: block; }
   .brand small { display: block; font-family: "Source Sans 3", sans-serif; font-weight: 400; color: var(--hero-muted); font-size: 13px; }
   .hero-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 40px; align-items: center; margin-top: 40px; }
   .badge { display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: .04em; color: var(--navy); background: var(--gold); border-radius: 999px; padding: 4px 12px; margin-bottom: 16px; }
@@ -154,9 +155,7 @@
 <header class="hero">
   <div class="wrap">
     <div class="brand">
-      <div class="brand-mark" aria-hidden="true">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#EAB308"><path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5z"/></svg>
-      </div>
+      <img class="brand-mark" src="/logo.svg" alt="" width="44" height="44">
       <div>Алдар Көсе<small>aldar-kose.kz</small></div>
     </div>
 
