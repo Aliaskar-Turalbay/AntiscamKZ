@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Модерация — Алдар Көсе</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--bg:#F4F5F8;--card:#FFFFFF;--text:#14171F;--muted:#5B6474;--line:#E3E6EC;--accent:#3B47E9;--accent-ink:#FFFFFF;--gold:#F5D328;--danger:#C62828;--danger-bg:#FDECEC;--ok:#15803D;--ok-bg:#E8F6EE;--pending:#B45309;--pending-bg:#FEF3E2;--chip:#EEF0F4}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1C1F25;--card:#272B33;--text:#EEF1F6;--muted:#A3ABB9;--line:#363B45;--accent:#7C85FF;--accent-ink:#0E1020;--danger:#FF8A80;--danger-bg:#3A2326;--ok:#6EE7A0;--ok-bg:#1F3328;--pending:#FBBF60;--pending-bg:#3A2F1E;--chip:#323741}}
+:root[data-theme="dark"]{--bg:#1C1F25;--card:#272B33;--text:#EEF1F6;--muted:#A3ABB9;--line:#363B45;--accent:#7C85FF;--accent-ink:#0E1020;--danger:#FF8A80;--danger-bg:#3A2326;--ok:#6EE7A0;--ok-bg:#1F3328;--pending:#FBBF60;--pending-bg:#3A2F1E;--chip:#323741}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input{font:inherit}
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px 64px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+header img{width:40px;height:40px;border-radius:50%}
+header h1{font-size:19px;margin:0;font-weight:700}
+header small{display:block;color:var(--muted);font-size:13px;font-weight:500}
+header .sp{flex:1}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;padding:9px 14px;cursor:pointer;font-weight:600;font-size:14px;min-height:40px}
+.btn:hover{border-color:var(--muted)}
+.btn:focus-visible,.tab:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ok{background:var(--ok-bg);color:var(--ok);border-color:transparent}
+.btn.no{background:var(--danger-bg);color:var(--danger);border-color:transparent}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn:disabled{opacity:.5;cursor:default}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.login{max-width:400px;margin:8vh auto 0;padding:28px}
+.login h2{margin:0 0 6px;font-size:22px}
+.login p{margin:0 0 20px;color:var(--muted)}
+label{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+input[type=email],input[type=password],input[type=search]{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:10px;padding:11px 12px;min-height:44px}
+.err{color:var(--danger);font-size:14px;margin-top:12px;min-height:20px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;overflow-x:auto}
+.tab{border:0;background:transparent;color:var(--muted);padding:8px 12px;border-radius:9px;cursor:pointer;font-weight:600;white-space:nowrap;min-height:38px}
+.tab[aria-selected=true]{background:var(--chip);color:var(--text)}
+.tab .n{font-variant-numeric:tabular-nums;margin-left:6px;opacity:.75}
+.toolbar .search{flex:1;min-width:200px}
+.group{padding:16px;margin-bottom:12px}
+.ghead{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.num{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.2px}
+.badge{font-size:12.5px;font-weight:600;border-radius:999px;padding:3px 10px;background:var(--chip);color:var(--muted)}
+.b-p{background:var(--pending-bg);color:var(--pending)}.b-y{background:var(--danger-bg);color:var(--danger)}.b-n{background:var(--ok-bg);color:var(--ok)}
+.gactions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.items{margin-top:12px;border-top:1px solid var(--line)}
+.item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.desc{white-space:pre-wrap;word-break:break-word}
+.meta{color:var(--muted);font-size:13px;margin-top:3px}
+.iactions{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end}
+.iactions .btn{padding:6px 10px;min-height:36px;font-size:13px}
+.empty{padding:40px 16px;text-align:center;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px)}
+.toast.show{opacity:1}
+.hide{display:none!important}
+@media (max-width:600px){#who{display:none}header h1{font-size:17px}.item{grid-template-columns:1fr}.iactions{justify-content:flex-start}.gactions{margin-left:0;width:100%}}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="/logo.svg" alt="">
+    <div><h1>Модерация жалоб</h1><small>Алдар Көсе · aldar-kose.kz</small></div>
+    <div class="sp"></div>
+    <span id="who" class="badge hide"></span>
+    <button id="logout" class="btn ghost hide" type="button">Выйти</button>
+  </header>
+
+  <!-- Вход -->
+  <form id="loginForm" class="card login hide" autocomplete="on">
+    <h2>Вход для модераторов</h2>
+    <p>Используйте почту и пароль, которые вам выдал администратор.</p>
+    <label for="email">Электронная почта</label>
+    <input id="email" type="email" required autocomplete="username">
+    <label for="password">Пароль</label>
+    <input id="password" type="password" required autocomplete="current-password">
+    <div class="err" id="loginErr" role="alert"></div>
+    <button class="btn primary" style="width:100%;margin-top:8px" type="submit" id="loginBtn">Войти</button>
+    <button class="btn ghost" style="width:100%;margin-top:6px" type="button" id="resetBtn">Забыли пароль?</button>
+  </form>
+
+  <!-- Нет прав -->
+  <div id="noAccess" class="card login hide">
+    <h2>Нет прав модератора</h2>
+    <p>Вы вошли, но ваш аккаунт ещё не назначен модератором. Попросите администратора добавить вашу почту в список модераторов.</p>
+    <button class="btn" type="button" onclick="signOut()">Выйти</button>
+  </div>
+
+  <!-- Панель -->
+  <main id="panel" class="hide">
+    <div class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Статус жалоб">
+        <button class="tab" role="tab" data-f="pending" aria-selected="true">На проверке<span class="n" id="c-pending"></span></button>
+        <button class="tab" role="tab" data-f="yes" aria-selected="false">Мошенники<span class="n" id="c-yes"></span></button>
+        <button class="tab" role="tab" data-f="no" aria-selected="false">Отклонено<span class="n" id="c-no"></span></button>
+        <button class="tab" role="tab" data-f="all" aria-selected="false">Все</button>
+      </div>
+      <input class="search" id="q" type="search" placeholder="Поиск по номеру или тексту" aria-label="Поиск">
+      <button class="btn" id="reload" type="button">Обновить</button>
+    </div>
+    <div id="list"></div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const sb = window.supabase.createClient("https://dzlquiqunkahzuqacvhf.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6bHF1aXF1bmthaHp1cWFjdmhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNDQ4ODEsImV4cCI6MjA5NzcyMDg4MX0.eMfUzMo5AZ6IgjY3_NG8dDPngjeZszvnOxnIJ5C8fkE");
+const $ = s => document.querySelector(s);
+let rows = [], filter = "pending", busy = false;
+
+function show(id){ ["#loginForm","#noAccess","#panel"].forEach(s => $(s).classList.toggle("hide", s !== id)); }
+function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),2600); }
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function fmtPhone(v){ const d=String(v||"").replace(/\D/g,""); return d.length===11 && d[0]==="7" ? "+7 "+d.slice(1,4)+" "+d.slice(4,7)+" "+d.slice(7,9)+" "+d.slice(9) : (v||"—"); }
+function fmtDate(s){ if(!s) return ""; const d=new Date(s); return d.toLocaleString("ru-RU",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}); }
+function plural(n){ const m=n%100, k=n%10; return n+' '+((m>=11&&m<=14)?'жалоб':k===1?'жалоба':(k>=2&&k<=4)?'жалобы':'жалоб'); }
+function status(r){ return r.is_approved === true ? "yes" : r.is_approved === false ? "no" : "pending"; }
+
+async function init(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session){ $("#who").classList.add("hide"); $("#logout").classList.add("hide"); show("#loginForm"); return; }
+  $("#who").textContent = session.user.email; $("#who").classList.remove("hide"); $("#logout").classList.remove("hide");
+  const { data: ok, error } = await sb.rpc("is_moderator");
+  if(error || !ok){ show("#noAccess"); return; }
+  show("#panel"); load();
+}
+
+async function load(){
+  $("#list").innerHTML = '<div class="empty">Загрузка…</div>';
+  const { data, error } = await sb.from("scammers").select("id,created_at,value,description,location,is_approved,moderated_at").order("created_at",{ascending:false}).limit(2000);
+  if(error){ $("#list").innerHTML = '<div class="empty">Не удалось загрузить: '+esc(error.message)+'</div>'; return; }
+  rows = data || []; render();
+}
+
+function render(){
+  const c = {pending:0,yes:0,no:0}; rows.forEach(r => c[status(r)]++);
+  $("#c-pending").textContent = c.pending; $("#c-yes").textContent = c.yes; $("#c-no").textContent = c.no;
+  const q = $("#q").value.trim().toLowerCase(), qd = q.replace(/\D/g,"");
+  const list = rows.filter(r => (filter==="all" || status(r)===filter) &&
+    (!q || (qd && String(r.value||"").replace(/\D/g,"").includes(qd)) || String(r.description||"").toLowerCase().includes(q) || String(r.value||"").toLowerCase().includes(q)));
+  if(!list.length){ $("#list").innerHTML = '<div class="empty">'+(filter==="pending" ? "Новых жалоб нет 🎉" : "Ничего не найдено")+'</div>'; return; }
+  const groups = new Map(); list.forEach(r => { const k=r.value||"—"; if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(r); });
+  let html = "";
+  for(const [value, items] of groups){
+    const all = rows.filter(r => r.value === value), p = all.filter(r=>status(r)==="pending").length, y = all.filter(r=>status(r)==="yes").length;
+    html += '<section class="card group"><div class="ghead"><span class="num">'+esc(fmtPhone(value))+'</span>'
+      + '<span class="badge">'+plural(all.length)+'</span>'
+      + (p ? '<span class="badge b-p">на проверке: '+p+'</span>' : '')
+      + (y ? '<span class="badge b-y">подтверждено: '+y+'</span>' : '')
+      + (p ? '<div class="gactions"><button class="btn no" data-g="false" data-v="'+esc(value)+'">Не мошенник — отклонить все</button><button class="btn ok" style="background:var(--danger);color:#fff" data-g="true" data-v="'+esc(value)+'">Мошенник — подтвердить все</button></div>' : '')
+      + '</div><div class="items">';
+    for(const r of items){
+      const s = status(r);
+      html += '<div class="item"><div><div class="desc">'+esc(r.description||"Без описания")+'</div>'
+        + '<div class="meta">'+esc(r.location||"")+(r.location?" · ":"")+fmtDate(r.created_at)
+        + (s!=="pending" ? ' · <span class="badge '+(s==="yes"?"b-y":"b-n")+'">'+(s==="yes"?"мошенник":"отклонено")+'</span>'+(r.moderated_at?' '+fmtDate(r.moderated_at):'') : '')+'</div></div>'
+        + '<div class="iactions">'
+        + (s!=="yes" ? '<button class="btn" data-id="'+r.id+'" data-set="true">Мошенник</button>' : '')
+        + (s!=="no" ? '<button class="btn" data-id="'+r.id+'" data-set="false">Отклонить</button>' : '')
+        + (s!=="pending" ? '<button class="btn ghost" data-id="'+r.id+'" data-set="null">Вернуть на проверку</button>' : '')
+        + '<button class="btn ghost" data-del="'+r.id+'" aria-label="Удалить жалобу">Удалить</button>'
+        + '</div></div>';
+    }
+    html += '</div></section>';
+  }
+  $("#list").innerHTML = html;
+}
+
+async function setStatus(match, val){
+  if(busy) return; busy = true;
+  let qy = sb.from("scammers").update({ is_approved: val });
+  qy = match.id ? qy.eq("id", match.id) : qy.eq("value", match.value).is("is_approved", null);
+  const { error } = await qy.select("id");
+  busy = false;
+  if(error){ toast("Ошибка: "+error.message); return; }
+  toast(val===true ? "Отмечено как мошенник" : val===false ? "Жалоба отклонена" : "Возвращено на проверку");
+  load();
+}
+
+$("#list").addEventListener("click", async e => {
+  const b = e.target.closest("button"); if(!b) return;
+  if(b.dataset.g){ setStatus({value:b.dataset.v}, b.dataset.g==="true"); return; }
+  if(b.dataset.set){ setStatus({id:+b.dataset.id}, b.dataset.set==="null" ? null : b.dataset.set==="true"); return; }
+  if(b.dataset.del){
+    if(b.dataset.confirm!=="1"){ b.dataset.confirm="1"; b.textContent="Точно удалить?"; b.classList.add("no"); setTimeout(()=>{ if(b.isConnected){ b.dataset.confirm=""; b.textContent="Удалить"; b.classList.remove("no"); } },4000); return; }
+    const { error } = await sb.from("scammers").delete().eq("id", +b.dataset.del);
+    if(error){ toast("Ошибка: "+error.message); return; }
+    toast("Жалоба удалена"); load();
+  }
+});
+
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  filter = t.dataset.f; document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x===t)); render();
+}));
+$("#q").addEventListener("input", render);
+$("#reload").addEventListener("click", load);
+
+$("#loginForm").addEventListener("submit", async e => {
+  e.preventDefault(); $("#loginErr").textContent=""; $("#loginBtn").disabled=true;
+  const { error } = await sb.auth.signInWithPassword({ email: $("#email").value.trim(), password: $("#password").value });
+  $("#loginBtn").disabled=false;
+  if(error){ $("#loginErr").textContent = error.message.includes("Invalid") ? "Неверная почта или пароль" : error.message; return; }
+  init();
+});
+$("#resetBtn").addEventListener("click", async () => {
+  const email = $("#email").value.trim();
+  if(!email){ $("#loginErr").textContent = "Введите почту, и мы отправим ссылку для сброса пароля"; return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + "/admin/" });
+  $("#loginErr").textContent = error ? error.message : "Письмо со ссылкой отправлено на " + email;
+});
+async function signOut(){ await sb.auth.signOut(); init(); }
+$("#logout").addEventListener("click", signOut);
+
+sb.auth.onAuthStateChange(async (ev) => {
+  if(ev === "PASSWORD_RECOVERY"){
+    const p = prompt("Введите новый пароль (минимум 8 символов):");
+    if(p && p.length >= 8){ const { error } = await sb.auth.updateUser({ password: p }); toast(error ? error.message : "Пароль изменён"); }
+  }
+});
+init();
+</script>
+</body>
+</html>
